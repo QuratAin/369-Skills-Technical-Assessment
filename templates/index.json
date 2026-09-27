@@ -117,10 +117,10 @@
       ],
       "name": "Brand Logo Marquee",
       "settings": {
-        "title": "",
+        "title": "Jewellery",
         "heading_size": "h2",
         "show_view_all": true,
-        "view_all_custom_url": "",
+        "view_all_custom_url": "shopify://collections",
         "background": "#ffffff",
         "logo_width": 120,
         "logo_height": 120,
