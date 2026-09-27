@@ -136,7 +136,9 @@
         "logo_XKcgtB"
       ],
       "custom_css": [
-        "{padding-top: 2rem;}"
+        ".brand-marquee-wrapper {margin-top: -2rem; gap: 15px;}",
+        " {padding-top: 12px; padding-bottom: 12px;}",
+        "@media screen and (max-width: 749px) {.brand-marquee-wrapper {gap: 10px; } {padding-bottom: 0px; }}"
       ],
       "name": "Brand Logo Marquee",
       "settings": {
