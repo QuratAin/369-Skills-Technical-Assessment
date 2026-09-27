@@ -1,3 +1,65 @@
+{% style %}
+    #shopify-section-{{section.id }} .brand-marquee {
+        background-color: {{section.setting.background }};
+        overflow: hidden;
+        width: 100%;
+    }
+    #shopify-section-{{section.id }} .brand-marquee-wrapper {
+        display: flex;
+        align-items: center;
+        width: fit-content;
+        will-change: transform;
+        animation: scroll-brands-{{section.id }} {{section.settings.speed }}s linear-infinite;
+    }
+    @media (prefers-reduced-motion: reduce) {
+        #shopify-section-{{section.id }} .brand-marquee-wrapper {
+            animation: none;
+        }
+    }
+    #shopify-section-{{section.id }} .brand-marquee-track {
+        display: flex;
+        align-items: flex-start;
+        gap: {{section.settings.logo_gap }}px;
+        padding: {{section.settings.vertical_padding }}px 0;
+    }
+    #shopify-section-{{section.id }} .brand-logo-item {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        gap: 8px;
+    } 
+    #shopify-section-{{section.id }} .brand-logo-item img {
+        display: block;
+        height: {{section.settings.logo_height }}px;
+        width: {{section.settings.logo_width }}px;
+        object-fit: contain;
+    }
+    #shopify-section-{{section.id }} .brand-logo-item__text {
+        font-size: {{section.settings.text_size }}px;
+        font-weight: 400;
+        text-align: center;
+        white-space: no-wrap;
+    }
+    @keyframes scroll-brands-{{section.id }} {
+        0% { transform: translateX(0)}
+        100% { transform: translateX(-50%)}
+    }
+    @media screen and (max-width: 749px) {
+        #shopify-section-{{section.id }} .brand-marquee-track {
+            gap: {{section.settings.logo_gap_mobile }}px;
+            padding: {{section.settings.vertical_padding_mobile }}px 0;
+        }
+        #shopify-section-{{section.id }} .brand-logo-item img {
+            height: {{section.settings.logo_height_mobile }}px;
+            width: {{section.settings.logo_width_mobile }}px;
+        }
+        #shopify-section-{{section.id }} .brand-logo-item__text {
+            font-size: {{section.settings.text_size_mobile }}px;
+        }
+    }
+{% endstyle %}
+
 {%- liquid
   if section.settings.view_all_custom_url != blank
     assign view_all_url = section.settings.view_all_custom_url
