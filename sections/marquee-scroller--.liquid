@@ -1,304 +1,444 @@
 {% style %}
-    #shopify-section-{{section.id }} .brand-marquee {
-        background-color: {{section.setting.background }};
-        overflow: hidden;
-        width: 100%;
+  #shopify-section-{{ section.id }} .brand-marquee {
+    background-color: {{ section.settings.background }};
+    overflow: hidden;
+    width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .brand-marquee-wrapper {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    will-change: transform;
+    animation: scroll-brands-{{ section.id }} {{ section.settings.speed }}s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .brand-marquee-wrapper {
+      animation: none;
     }
-    #shopify-section-{{section.id }} .brand-marquee-wrapper {
-        display: flex;
-        align-items: center;
-        width: fit-content;
-        will-change: transform;
-        animation: scroll-brands-{{section.id }} {{section.settings.speed }}s linear-infinite;
-    }
-    @media (prefers-reduced-motion: reduce) {
-        #shopify-section-{{section.id }} .brand-marquee-wrapper {
-            animation: none;
-        }
-    }
-    #shopify-section-{{section.id }} .brand-marquee-track {
-        display: flex;
-        align-items: flex-start;
-        gap: {{section.settings.logo_gap }}px;
-        padding: {{section.settings.vertical_padding }}px 0;
-    }
-    #shopify-section-{{section.id }} .brand-logo-item {
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        gap: 8px;
-    } 
-    #shopify-section-{{section.id }} .brand-logo-item img {
-        display: block;
-        height: {{section.settings.logo_height }}px;
-        width: {{section.settings.logo_width }}px;
-        object-fit: contain;
-    }
-    #shopify-section-{{section.id }} .brand-logo-item__text {
-        font-size: {{section.settings.text_size }}px;
+  }
+
+  #shopify-section-{{ section.id }} .brand-marquee-track {
+    display: flex;
+    align-items: flex-start;
+    gap: {{ section.settings.logo_gap }}px;
+    padding: {{ section.settings.vertical_padding }}px 0;
+  }
+
+  #shopify-section-{{ section.id }} .brand-logo-item {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  #shopify-section-{{ section.id }} .brand-logo-item img,
+  #shopify-section-{{ section.id }} .brand-logo-item svg {
+    display: block;
+    height: {{ section.settings.logo_height }}px;
+    width: {{ section.settings.logo_width }}px;
+    object-fit: contain;
+  }
+
+  #shopify-section-{{ section.id }} .brand-logo-item svg {
+    fill: #d3d3d3;
+  }
+
+  #shopify-section-{{ section.id }} .brand-logo-item__text {
+    font-size: {{ section.settings.text_size }}px;
+    {%- case section.settings.text_style %}
+      {%- when 'bold' %}
+        font-weight: 700;
+      {%- when 'italic' %}
+        font-style: italic;
+      {%- when 'bold-italic' %}
+        font-weight: 700;
+        font-style: italic;
+      {%- else %}
         font-weight: 400;
-        text-align: center;
-        white-space: no-wrap;
+    {%- endcase %}
+    text-align: center;
+    color: {{ section.settings.text_color }};
+    white-space: nowrap;
+  }
+
+  @keyframes scroll-brands-{{ section.id }} {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  #shopify-section-{{ section.id }} .brand-marquee:hover .brand-marquee-wrapper {
+    animation-play-state: paused;
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .brand-marquee-track {
+      gap: {{ section.settings.logo_gap_mobile }}px;
+      padding: {{ section.settings.vertical_padding_mobile }}px 0;
     }
-    @keyframes scroll-brands-{{section.id }} {
-        0% { transform: translateX(0)}
-        100% { transform: translateX(-50%)}
+
+    #shopify-section-{{ section.id }} .brand-logo-item img,
+    #shopify-section-{{ section.id }} .brand-logo-item svg {
+      height: {{ section.settings.logo_height_mobile }}px;
+      width: {{ section.settings.logo_width_mobile }}px;
     }
-    @media screen and (max-width: 749px) {
-        #shopify-section-{{section.id }} .brand-marquee-track {
-            gap: {{section.settings.logo_gap_mobile }}px;
-            padding: {{section.settings.vertical_padding_mobile }}px 0;
-        }
-        #shopify-section-{{section.id }} .brand-logo-item img {
-            height: {{section.settings.logo_height_mobile }}px;
-            width: {{section.settings.logo_width_mobile }}px;
-        }
-        #shopify-section-{{section.id }} .brand-logo-item__text {
-            font-size: {{section.settings.text_size_mobile }}px;
-        }
+
+    #shopify-section-{{ section.id }} .brand-logo-item__text {
+      font-size: {{ section.settings.text_size_mobile }}px;
     }
+  }
 {% endstyle %}
 
 {%- liquid
+  assign view_all_url = section.settings.parent_collection.url
   if section.settings.view_all_custom_url != blank
     assign view_all_url = section.settings.view_all_custom_url
+  endif
+  assign show_view_all_link = false
+  if section.settings.show_view_all and view_all_url != blank
+    assign show_view_all_link = true
   endif
 -%}
 
 <div class="page-width brand-marquee">
-  {% if section.settings.title %}
-    <div class="collection__titlr title-wrapper title-wrapper--no-top-margin">
+
+  {%- if section.settings.title != blank -%}
+    <div class="collection__title title-wrapper title-wrapper--no-top-margin">
       <div class="title-wrapper-with-link title-wrapper--no-top-margin">
-        <h2 class="title inline-richtext {{section.settings.heading_size}}">
+
+        {%- if show_view_all_link -%}
+          <a class="full-unstyled-link" href="{{ view_all_url }}" aria-label="{{ section.settings.title | strip_html | escape }}">
+        {%- endif -%}
+
+        <h2 class="title inline-richtext {{ section.settings.heading_size }}">
           {{ section.settings.title }}
         </h2>
-        {% if view_all_url %}
-          <a class="view-all-link link" href="{{view_all_url}}">View all</a>
-        {% endif %}
+
+        {%- if show_view_all_link -%}
+          </a>
+        {%- endif -%}
+
+        {%- if show_view_all_link -%}
+          <a
+            href="{{ view_all_url }}"
+            class="{% if section.settings.view_all_style == 'link' %}view-all-link link underlined-link{% elsif section.settings.view_all_style == 'solid' %}button{% else %}button button--secondary{% endif %}"
+            id="ViewAll-{{ section.id }}"
+            aria-label="{{ 'sections.featured_collection.view_all_label' | t: collection_name: section.settings.parent_collection.title | escape }}"
+          >
+            {{ 'sections.featured_collection.view_all' | t }}
+          </a>
+        {%- endif -%}
+
       </div>
     </div>
-  {% endif %}
+  {%- endif -%}
+
   <div class="brand-marquee-wrapper">
-    {% for i in (1..2) %}
+    {%- for i in (1..2) -%}
       <div class="brand-marquee-track">
-        {% for block in section.blocks %}
-          {% liquid
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign alt_text = block.settings.logo.alt
+            if alt_text == blank and block.settings.logo_url != blank
+              assign url_parts = block.settings.logo_url | split: '/'
+              assign last_segment = url_parts | last
+              assign alt_text = last_segment | replace: '-', ' ' | replace: '_', ' ' | capitalize
+            endif
+            if alt_text == blank
+              assign alt_text = 'Brand logo'
+            endif
+
             assign desktop_height = section.settings.logo_height | times: 2
             assign desktop_width = section.settings.logo_width | times: 2
             assign mobile_height = section.settings.logo_height_mobile | times: 2
             assign mobile_width = section.settings.logo_width_mobile | times: 2
-          %}
+
+            assign img_loading = 'eager'
+            if i == 2
+              assign img_loading = 'lazy'
+            endif
+          -%}
+
           <div class="brand-logo-item" {{ block.shopify_attributes }}>
-            {% capture logo_image %}
-                            {%  if block.settings.logo %}
-                                <img 
-                                    src="{{ block.settings.logo |  image_url: width: desktop_width, height: desktop_height, crop: 'center' }}"
-                                    width="{{desktop_width}}",
-                                    height="{{desktop_height}}"
-                                > 
-                            {% endif %}
-                        {% endcapture %}
-            {% if block.settings.logo_url %}
-              <a href="{{block.settings.logo_url}}">
+            {%- capture logo_image -%}
+              {%- if block.settings.logo != blank -%}
+                <img
+                  src="{{ block.settings.logo | image_url: width: desktop_width, height: desktop_height, crop: 'center' }}"
+                  srcset="{{ block.settings.logo | image_url: width: mobile_width, height: mobile_height, crop: 'center' }} {{ mobile_width }}w,
+                          {{ block.settings.logo | image_url: width: desktop_width, height: desktop_height, crop: 'center' }} {{ desktop_width }}w"
+                  sizes="(max-width: 749px) {{ mobile_width }}px, {{ desktop_width }}px"
+                  alt="{{ alt_text }}"
+                  loading="{{ img_loading }}"
+                  width="{{ desktop_width }}"
+                  height="{{ desktop_height }}"
+                >
+              {%- else -%}
+                {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+              {%- endif -%}
+            {%- endcapture -%}
+
+            {%- if block.settings.logo_url != blank -%}
+              <a href="{{ block.settings.logo_url }}" aria-label="{{ alt_text }}">
                 {{ logo_image }}
               </a>
-            {% endif %}
-            {% if block.settings.label %}
-              <span class="brand_logo_item__text h3">
-                {{ block.settings.label }}
-              </span>
-            {% endif %}
+            {%- else -%}
+              {{ logo_image }}
+            {%- endif -%}
+
+            {%- if block.settings.label != blank -%}
+              <span class="brand-logo-item__text h3">{{ block.settings.label }}</span>
+            {%- endif -%}
           </div>
-        {% endfor %}
+        {%- endfor -%}
       </div>
-    {% endfor %}
+    {%- endfor -%}
   </div>
 </div>
 
 {% schema %}
-  {
-    "name": "Brand Logo Marquee",
-    "tag": "section",
-    "class": "section",
-    "settings": [
-      {
-        "type": "inline_richtext",
-        "id": "title",
-        "label": "Heading"
-      },
-      {
-        "type": "select",
-        "id": "heading_size",
-        "label": "Heading size",
-        "options": [
-          {
-            "value": "h2",
-            "label": "Small"
-          }, {
-            "value": "h1",
-            "label": "Medium"
-          }, {
-            "value": "h0",
-            "label": "Large"
-          }
-        ],
-        "default": "h2"
-      },
-      {
-        "type": "checkbox",
-        "id": "show_view_all",
-        "label": "Show view all",
-        "default": true
-      },
-      {
-        "type": "url",
-        "id": "view_all_custom_url",
-        "label": "view all url"
-      }, {
-        "type": "color",
-        "id": "background",
-        "label": "Background color",
-        "default": "#ffffff"
-      }, {
-        "type": "range",
-        "id": "logo_width",
-        "min": 20,
-        "max": 300,
-        "step": 5,
-        "unit": "px",
-        "label": "Logo Width",
-        "default": 120
-      }, {
-        "type": "range",
-        "id": "logo_height",
-        "min": 20,
-        "max": 200,
-        "step": 5,
-        "unit": "px",
-        "label": "Logo Height",
-        "default": 120
-      }, {
-        "type": "range",
-        "id": "logo_gap",
-        "min": 5,
-        "max": 50,
-        "step": 1,
-        "unit": "px",
-        "label": "Gap b/w logos",
-        "default": 10
-      }, {
-        "type": "range",
-        "id": "vertical_padding",
-        "min": 10,
-        "max": 100,
-        "step": 5,
-        "unit": "px",
-        "label": "Vertical Padding",
-        "default": 30
-      }, {
-        "type": "range",
-        "id": "logo_width_mobile",
-        "min": 20,
-        "max": 200,
-        "step": 5,
-        "unit": "px",
-        "label": "Logo Width Mobile",
-        "default": 70
-      }, {
-        "type": "range",
-        "id": "logo_height_mobile",
-        "min": 20,
-        "max": 150,
-        "step": 5,
-        "unit": "px",
-        "label": "Logo Height Mobile",
-        "default": 70
-      }, {
-        "type": "range",
-        "id": "logo_gap_mobile",
-        "min": 5,
-        "max": 50,
-        "step": 1,
-        "unit": "px",
-        "label": "Gap b/w logos - mobile",
-        "default": 10
-      }, {
-        "type": "range",
-        "id": "vertical_padding_mobile",
-        "min": 10,
-        "max": 100,
-        "step": 5,
-        "unit": "px",
-        "label": "Vertical Padding - mobile",
-        "default": 20
-      }, {
-        "type": "range",
-        "id": "speed",
-        "min": 5,
-        "max": 100,
-        "step": 5,
-        "unit": "s",
-        "label": "Speed",
-        "default": 30,
-        "info": "Lower = faster"
-      }, {
-        "type": "range",
-        "id": "text_size",
-        "min": 10,
-        "max": 24,
-        "step": 1,
-        "unit": "px",
-        "label": "font size - desktop",
-        "default": 13
-      }, {
-        "type": "range",
-        "id": "text_size_mobile",
-        "min": 10,
-        "max": 24,
-        "step": 1,
-        "unit": "px",
-        "label": "Font size - mobile",
-        "default": 11
-      }
-    ],
-    "blocks": [
-      {
-        "type": "logo",
-        "name": "brand logo",
-        "settings": [
-          {
-            "type": "image_picker",
-            "id": "logo",
-            "label": "Logo image"
-          }, {
-            "type": "url",
-            "id": "logo_url",
-            "label": "logo url"
-          }, {
-            "type": "text",
-            "id": "label",
-            "label": "Logo text",
-            "info": "this is optional"
-          }
-        ]
-      }
-    ],
-    "presets": [
-      {
-        "name": "Brand Logo Marquee",
-        "blocks": [
-          {
-            "type": "logo"
-          }, {
-            "type": "logo"
-          }, {
-            "type": "logo"
-          }, {
-            "type": "logo"
-          }
-        ]
-      }
-    ]
-  }
+{
+  "name": "Brand Logo Marquee",
+  "class": "section-brand-marquee",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        { "value": "h2",   "label": "Small" },
+        { "value": "h1",   "label": "Medium" },
+        { "value": "h0",   "label": "Large" },
+        { "value": "hxl",  "label": "Extra Large" },
+        { "value": "hxxl", "label": "Extra Extra Large" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "header",
+      "content": "View All Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show view all",
+      "default": true
+    },
+    {
+      "type": "collection",
+      "id": "parent_collection",
+      "label": "Collection",
+      "info": "Used for the heading link and view all URL."
+    },
+    {
+      "type": "url",
+      "id": "view_all_custom_url",
+      "label": "Custom view all URL",
+      "info": "Overrides the parent collection URL if set."
+    },
+    {
+      "type": "select",
+      "id": "view_all_style",
+      "label": "View all style",
+      "default": "solid",
+      "options": [
+        { "value": "link",    "label": "Link" },
+        { "value": "outline", "label": "Outline button" },
+        { "value": "solid",   "label": "Solid button" }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Desktop"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 20,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Logo Width",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "min": 20,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Logo Height",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "logo_gap",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Gap Between Logos",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Vertical Padding",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "range",
+      "id": "logo_width_mobile",
+      "min": 20,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Logo Width",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "logo_height_mobile",
+      "min": 20,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Logo Height",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "logo_gap_mobile",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Gap Between Logos",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding_mobile",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Vertical Padding",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 5,
+      "max": 100,
+      "step": 5,
+      "unit": "s",
+      "label": "Speed",
+      "default": 30,
+      "info": "Lower = faster"
+    },
+    {
+      "type": "header",
+      "content": "Label Text"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size (Desktop)",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "text_size_mobile",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size (Mobile)",
+      "default": 11
+    },
+    {
+      "type": "select",
+      "id": "text_style",
+      "label": "Font Style",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "bold", "label": "Bold" },
+        { "value": "italic", "label": "Italic" },
+        { "value": "bold-italic", "label": "Bold Italic" }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#333333"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Brand Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo Image"
+        },
+        {
+          "type": "url",
+          "id": "logo_url",
+          "label": "Link URL"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label Text",
+          "info": "Optional text shown below the logo"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Logo Marquee",
+      "blocks": [
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" },
+        { "type": "logo" }
+      ]
+    }
+  ]
+}
 {% endschema %}
