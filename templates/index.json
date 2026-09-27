@@ -101,7 +101,7 @@
           "settings": {
             "logo": "shopify://shop_images/autumn-photographer-taking-picture_925x_1619bf60-7f6c-4f08-8201-9e5f62349789.jpg",
             "logo_url": "",
-            "label": ""
+            "label": "Jacket"
           }
         },
         "logo_RFUHUX": {
@@ -111,20 +111,41 @@
             "logo_url": "",
             "label": ""
           }
+        },
+        "logo_mTP4bn": {
+          "type": "logo",
+          "settings": {
+            "logo_url": "",
+            "label": ""
+          }
+        },
+        "logo_XKcgtB": {
+          "type": "logo",
+          "settings": {
+            "logo_url": "",
+            "label": ""
+          }
         }
       },
       "block_order": [
         "logo_x8VH49",
         "logo_PEELCC",
         "logo_G84fYJ",
-        "logo_RFUHUX"
+        "logo_RFUHUX",
+        "logo_mTP4bn",
+        "logo_XKcgtB"
+      ],
+      "custom_css": [
+        "{padding-top: 2rem;}"
       ],
       "name": "Brand Logo Marquee",
       "settings": {
         "title": "Jewellery",
         "heading_size": "h2",
         "show_view_all": true,
+        "parent_collection": "",
         "view_all_custom_url": "shopify://collections",
+        "view_all_style": "link",
         "background": "#ffffff",
         "logo_width": 120,
         "logo_height": 120,
@@ -136,7 +157,9 @@
         "vertical_padding_mobile": 20,
         "speed": 30,
         "text_size": 13,
-        "text_size_mobile": 11
+        "text_size_mobile": 11,
+        "text_style": "normal",
+        "text_color": "#333333"
       }
     }
   },
